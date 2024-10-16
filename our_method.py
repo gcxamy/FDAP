@@ -1,7 +1,3 @@
-"""
-Created 
-"""
-
 import torch
 import torch.nn as nn
 import numpy as np
@@ -109,7 +105,7 @@ def feature(model,x):
        self_feature.append(x_)
     return self_feature 
 class BaseAttack(object):
-    def __init__(self, attack_name, model_name, attention_layer_start, attention_layer_end, mici,target):
+    def __init__(self, attack_name, model_name, attention_layer_start, attention_layer_end,target):
         #device='cuda:1'
         self.attack_name = attack_name
         self.model_name = model_name
@@ -127,7 +123,7 @@ class BaseAttack(object):
         self.model.eval()
         self.attention_layer_start = attention_layer_start
         self.attention_layer_end = attention_layer_end
-        self.mici = mici
+        
 
     def forward(self, *input):
         """
@@ -219,8 +215,8 @@ class BaseAttack(object):
         return images
 
 class OurAlgorithm(BaseAttack):
-    def __init__(self, model_name, attention_layer_start, attention_layer_end, mici, ablation_study='0,1,0', sample_num_batches=130, lamb=0.1, steps=30, epsilon=16/255, target=False):
-        super(OurAlgorithm, self).__init__('OurAlgorithm', model_name, attention_layer_start, attention_layer_end, mici, target)
+    def __init__(self, model_name, attention_layer_start, attention_layer_end, ablation_study='0,1,0', sample_num_batches=130, lamb=0.1, steps=30, epsilon=16/255, target=False):
+        super(OurAlgorithm, self).__init__('OurAlgorithm', model_name, attention_layer_start, attention_layer_end, target)
         self.epsilon = epsilon
         self.steps = steps
         self.step_size = 3/255
