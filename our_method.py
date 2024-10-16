@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Jun 24 21:56:17 2024
-
-@author: 54549
+Created 
 """
 
 import torch
@@ -322,7 +319,7 @@ class OurAlgorithm(BaseAttack):
 #attenck = feature(self.model,self._sub_mean_div_std(unnorm_inps+perts))
                 
                 for j in range(self.attention_layer_start-1,self.attention_layer_end):
-                    los_ = (j/ss)*(gaopin(attenck[j].mean(dim=1))).cuda()
+                    los_ = torch.log(gaopin(attenck[j].mean(dim=1)))**(2/3).cuda()
                     cost1 = los_+cost1
                 
                 attenck=[]
@@ -330,14 +327,14 @@ class OurAlgorithm(BaseAttack):
                    
                   #  cost3= cost3+ los_
                # cost = cost1+self.lamb*cost2
-                cost=0.1*cost1
+                cost=-cost1
             else:
                 print ('Not Using L2')
                # cost = self.loss_flag * loss(outputs, labels).cuda()
     
             
             cost.backward()
-            grad = -perts.grad.data
+            grad = perts.grad.data
             perts.data = self._update_perts(perts.data, grad, self.step_size)
             perts.data = torch.clamp(unnorm_inps.data + perts.data, 0.0, 1.0) - unnorm_inps.data
             perts.grad.data.zero_()
@@ -448,12 +445,12 @@ class OurAlgorithm_MI(BaseAttack):
                
                 
                 for j in range(self.attention_layer_start-1,self.attention_layer_end):
-                    los_ = (j/ss)*(gaopin(attenck[j].mean(dim=1))).cuda()
+                    los_ = los_ = torch.log(gaopin(attenck[j].mean(dim=1)))**(2/3).cuda()
                     cost1 = los_+cost1
                 
                 attenck=[]
                 
-                cost=0.1*cost1
+                cost=-cost1
             else:
                 print ('Not Using L2')
                 cost = self.loss_flag * loss(outputs, labels).cuda()
